@@ -1,0 +1,1 @@
+from baba_minigrid.envs.empty import EmptyEnv
