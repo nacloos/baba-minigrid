@@ -336,9 +336,9 @@ class BabaIsYouGrid:
 class BabaIsYouEnv(gym.Env):
     metadata = {
         # Deprecated: use 'render_modes' instead
-        "render.modes": ["human", "rgb_array"],
+        "render.modes": ["human", "rgb_array", "dict"],
         "video.frames_per_second": 10,  # Deprecated: use 'render_fps' instead
-        "render_modes": ["human", "rgb_array", "single_rgb_array"],
+        "render_modes": ["human", "rgb_array", "single_rgb_array", "dict", "matrix"],
         "render_fps": 10,
     }
 
@@ -851,10 +851,42 @@ class BabaIsYouEnv(gym.Env):
         return img
 
     def render(self, mode="human", highlight=True, tile_size=TILE_PIXELS):
-        assert mode in self.metadata["render_modes"]
+        assert mode in self.metadata["render_modes"], mode
         """
         Render the whole-grid human view
         """
+        if mode == "dict":
+            grid = {}
+            # don't output the outer walls
+            for j in range(1, self.height-1):
+                for i in range(1, self.width-1):
+                    cell = self.grid.get(i, j)
+                    if cell is None:
+                        continue
+
+                    if isinstance(cell, RuleBlock):
+                        grid[(i, j)] = ('rule', cell.name)
+                    else:
+                        grid[(i, j)] = (cell.name, cell.color)
+            return grid
+
+        if mode == "matrix":
+            # don't output the outer walls
+            grid = np.zeros((self.width-2, self.height-2), dtype=object)
+            for j in range(self.height-2):
+                for i in range(self.width-2):
+                    cell = self.grid.get(i+1, j+1)
+                    if cell is None:
+                        grid[i, j] = "Empty"
+                        continue
+
+                    if isinstance(cell, RuleBlock):
+                        grid[(i, j)] = f"Rule[{cell.name}]"
+                    else:
+                        grid[(i, j)] = f"Obj[{cell.name}, {cell.color}]"
+            grid = grid.T
+            return grid
+
         if mode == "human" and not self.window:
             self.window = Window("baba_minigrid")
             self.window.show(block=False)

@@ -63,6 +63,11 @@ def maybe_add_rule(block_list, ruleset):
     if rule is None:
         return False
 
+    # make it easier to get active rules
+    if '_rule_' not in ruleset:
+        ruleset['_rule_'] = []
+    ruleset['_rule_'].append(rule)
+
     if 'property' in rule and 'object' in rule:
         ruleset[rule['property']][rule['object']] = True
 

@@ -219,6 +219,7 @@ class FlexibleWorldObj(WorldObj):
     def __init__(self, type, color):
         assert type in objects, "{} not in {}".format(type, objects)
         super().__init__(type, color)
+        self.name = name_mapping[type]  # pretty name
         # direction in which the object is facing
         self.dir = 0  # order: right, down, left, up
 
