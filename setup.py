@@ -2,9 +2,9 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name='baba-is-ai',
+    name='baba-minigrid',
     version="0.0.1",
-    packages=[package for package in find_packages() if package.startswith('baba_is_ai')],
+    packages=[package for package in find_packages() if package.startswith('baba_minigrid')],
     install_requires=[
         # "gym==0.25.0",  # TODO: not compatible with SB3
         "gym<=0.25.0",
